@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History & Evolution of Accounting | Flashcards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="eyebrow">ACCOUNTING REVIEW</div>
+      <h1>History & Evolution<br><span>of Accounting</span></h1>
+      <p class="subtitle">Key concepts and milestones • Study flashcards</p>
+    </header>
+
+    <section class="toolbar">
+      <label class="search-wrap" for="search">⌕
+        <input id="search" type="search" placeholder="Search cards..." autocomplete="off">
+      </label>
+      <select id="stageFilter" aria-label="Filter by topic">
+        <option value="all">All topics</option>
+      </select>
+    </section>
+
+    <section class="progress-row">
+      <span id="counter">Card 1 of 1</span>
+      <span id="knownCount">Known: 0</span>
+    </section>
+    <div class="progress-track"><div id="progressFill"></div></div>
+
+    <button class="flashcard" id="flashcard" aria-label="Flip flashcard">
+      <div class="card-inner" id="cardInner">
+        <div class="card-face front">
+          <span class="face-label">QUESTION</span>
+          <span class="topic-pill" id="frontTopic"></span>
+          <h2 id="question"></h2>
+          <p class="flip-hint">Click or press Space to reveal answer</p>
+        </div>
+        <div class="card-face back">
+          <span class="face-label">ANSWER</span>
+          <span class="topic-pill" id="backTopic"></span>
+          <p id="answer"></p>
+          <p class="flip-hint">Click to return to question</p>
+        </div>
+      </div>
+    </button>
+
+    <div class="controls">
+      <button class="secondary" id="prevBtn">← Previous</button>
+      <button class="primary" id="flipBtn">Show answer</button>
+      <button class="secondary" id="nextBtn">Next →</button>
+    </div>
+    <div class="study-controls">
+      <button class="known-btn" id="knownBtn">✓ Mark as known</button>
+      <button class="secondary" id="shuffleBtn">⤨ Shuffle</button>
+      <button class="secondary" id="resetBtn">↻ Restart</button>
+    </div>
+    <p class="empty-state" id="emptyState" hidden>No cards match your search. Try another keyword or topic.</p>
+    <footer>Based on the provided “History and Evolution of Accounting” notes.</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
