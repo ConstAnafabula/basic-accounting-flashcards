@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Transactions Flashcards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">ACCOUNTING REVIEW</p>
+      <h1>Business <span>Transactions</span></h1>
+      <p class="subtitle">Inflows and outflows • Flashcards</p>
+    </header>
+
+    <section class="toolbar">
+      <label class="search"><span>⌕</span><input id="search" type="search" placeholder="Search transactions..."></label>
+      <select id="filter" aria-label="Filter transactions">
+        <option value="all">All transactions</option>
+        <option value="Inflows">Inflows</option>
+        <option value="Outflows">Outflows</option>
+      </select>
+    </section>
+
+    <section class="status">
+      <span id="counter">Card 1 of 1</span>
+      <span id="knownCount">Known: 0</span>
+    </section>
+    <div class="progress"><div id="progressFill"></div></div>
+
+    <button class="flashcard" id="flashcard" aria-label="Flip flashcard">
+      <div class="inner" id="inner">
+        <div class="face front">
+          <span class="label">QUESTION</span>
+          <span class="tag" id="frontTag"></span>
+          <h2 id="question"></h2>
+          <p class="hint">Click or press Space to reveal the answer</p>
+        </div>
+        <div class="face back">
+          <span class="label">ANSWER</span>
+          <span class="tag" id="backTag"></span>
+          <h2 id="answer"></h2>
+          <p class="hint">Click to return to the question</p>
+        </div>
+      </div>
+    </button>
+
+    <div class="controls">
+      <button class="secondary" id="prev">← Previous</button>
+      <button class="primary" id="flip">Show answer</button>
+      <button class="secondary" id="next">Next →</button>
+    </div>
+    <div class="controls extra">
+      <button class="known" id="known">✓ Mark as known</button>
+      <button class="secondary" id="shuffle">⤨ Shuffle</button>
+      <button class="secondary" id="restart">↻ Restart</button>
+    </div>
+    <p id="empty" hidden>No matching transactions. Try a different search.</p>
+    <footer>Based on the provided “List of Business Transactions” PDF.</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
