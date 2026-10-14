@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accounting Quiz</title><link rel="stylesheet" href="style.css">
+<style>
+.quiz-wrap{padding:24px 34px 30px}.navline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 22px}.backlink{color:var(--blue);font-weight:700;text-decoration:none;font-size:13px}.quiz-intro{margin-bottom:20px}.quiz-intro h2{font:800 24px Manrope;margin:0 0 7px}.quiz-intro p{margin:0;color:var(--muted);font-size:13px}.quiz-tools{display:flex;gap:10px;margin-bottom:18px}.quiz-tools select{height:42px;max-width:none;flex:1}.question-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:14px}.q-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:12px}.q-text{font:700 18px/1.45 Manrope;margin:0 0 18px}.options{display:grid;gap:9px}.option{width:100%;text-align:left;background:#f8faff;border:1px solid var(--line);border-radius:12px;padding:13px 14px;color:var(--ink);font:500 13px/1.45 'DM Sans';cursor:pointer}.option:hover:not(:disabled){border-color:#9bb2ff;background:#f1f5ff}.option.correct{border-color:#22a477;background:#eafaf3}.option.wrong{border-color:#e56c78;background:#fff0f1}.feedback{font-size:12px;line-height:1.5;margin-top:12px;color:var(--muted)}.quiz-actions{display:flex;gap:10px;margin-top:16px}.quiz-actions .btn{flex:1}.score-panel{text-align:center;padding:30px 20px}.score-number{font:800 42px Manrope;color:var(--blue);margin:12px 0}.hidden{display:none!important}.quiz-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px;margin-top:14px}@media(max-width:560px){.quiz-wrap{padding:20px}.q-text{font-size:16px}.question-box{padding:17px}.navline{align-items:flex-start}}
+</style></head>
+<body><div class="app">
+<header class="top"><div class="brand-mark">A</div><div><p class="eyebrow">PRACTICE MODE</p><h1>Basic Accounting</h1><p class="subtitle">Introduction to Accounting · Quiz</p></div></header>
+<main class="quiz-wrap">
+<div class="navline"><a class="backlink" href="index.html">← Back to flashcards</a><span id="quizCount" class="subtitle">10 questions</span></div>
+<div class="quiz-intro"><h2>Test your knowledge</h2><p>Choose the best answer. Your score and explanations appear when you finish.</p></div>
+<div class="quiz-tools"><select id="topicFilter" aria-label="Quiz topic"><option value="All">All topics</option></select><select id="lengthFilter" aria-label="Number of questions"><option value="10">10 questions</option><option value="20">20 questions</option><option value="30">30 questions</option></select></div>
+<div id="quizArea"></div>
+<div id="result" class="question-box score-panel hidden"><p class="eyebrow">QUIZ COMPLETE</p><h2>Your result</h2><div id="score" class="score-number"></div><p id="scoreMessage"></p><button id="retry" class="btn primary">Try another quiz</button></div>
+<div class="quiz-footer"><span id="progressText">Question 1 of 10</span><span id="answeredText">0 answered</span></div>
+</main><footer><span>Made for focused review</span><span>Practice · Review · Improve</span></footer></div>
+<script src="quiz-data.js"></script><script>
+const area=document.getElementById('quizArea'), result=document.getElementById('result');
+const topicFilter=document.getElementById('topicFilter'), lengthFilter=document.getElementById('lengthFilter');
+[...new Set(allCards.map(c=>c.category))].sort().forEach(cat=>{const o=document.createElement('option');o.value=cat;o.textContent=cat;topicFilter.appendChild(o)});
+let questions=[],position=0,answers={};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){
+ const cat=topicFilter.value, pool=allCards.filter(c=>cat==='All'||c.category===cat);
+ questions=shuffle([...pool]).slice(0,Math.min(Number(lengthFilter.value),pool.length)).map(card=>{
+  const distractors=shuffle(pool.filter(c=>c.back!==card.back&&c.front!==card.front)).slice(0,3).map(c=>c.back);
+  if(distractors.length<3) distractors.push(...shuffle(allCards.filter(c=>c.back!==card.back&&!distractors.includes(c.back))).slice(0,3-distractors.length).map(c=>c.back));
+  return {card,options:shuffle([card.back,...distractors])};
+ });
+ position=0;answers={};result.classList.add('hidden');area.classList.remove('hidden');render();
+}
+function render(){
+ if(position>=questions.length){finish();return}
+ const q=questions[position],chosen=answers[position];
+ document.getElementById('quizCount').textContent=questions.length+' questions';
+ document.getElementById('progressText').textContent=`Question ${position+1} of ${questions.length}`;
+ document.getElementById('answeredText').textContent=Object.keys(answers).length+' answered';
+ area.innerHTML='';
+ const box=document.createElement('section');box.className='question-box';
+ const meta=document.createElement('div');meta.className='q-meta';meta.innerHTML=`<span>QUESTION ${position+1}</span><span>${escapeHtml(q.card.category)}</span>`;box.appendChild(meta);
+ const title=document.createElement('h3');title.className='q-text';title.textContent=q.card.front;box.appendChild(title);
+ const options=document.createElement('div');options.className='options';
+ q.options.forEach((opt,i)=>{const b=document.createElement('button');b.className='option';b.textContent=String.fromCharCode(65+i)+'. '+opt;b.disabled=chosen!==undefined;
+ if(chosen!==undefined){if(opt===q.card.back)b.classList.add('correct');else if(opt===chosen)b.classList.add('wrong')}
+ b.addEventListener('click',()=>{answers[position]=opt;render()});options.appendChild(b)});box.appendChild(options);
+ if(chosen!==undefined){const f=document.createElement('p');f.className='feedback';f.textContent=chosen===q.card.back?'Correct. '+q.card.back:'Not quite. Correct answer: '+q.card.back;box.appendChild(f)}
+ const actions=document.createElement('div');actions.className='quiz-actions';
+ if(position>0){const prev=document.createElement('button');prev.className='btn secondary';prev.textContent='← Previous';prev.onclick=()=>{position--;render()};actions.appendChild(prev)}
+ const next=document.createElement('button');next.className='btn primary';next.textContent=position===questions.length-1?'Finish quiz':'Next question →';next.disabled=chosen===undefined;next.onclick=()=>{position++;render()};actions.appendChild(next);box.appendChild(actions);area.appendChild(box);
+}
+function finish(){
+ area.classList.add('hidden');result.classList.remove('hidden');
+ const correct=questions.filter((q,i)=>answers[i]===q.card.back).length;
+ document.getElementById('score').textContent=`${correct} / ${questions.length}`;
+ document.getElementById('scoreMessage').textContent=`You scored ${Math.round(correct/questions.length*100)}%. Review the flashcards for any topics you missed.`;
+ document.getElementById('progressText').textContent='Quiz complete';document.getElementById('answeredText').textContent=questions.length+' answered';
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.getElementById('retry').addEventListener('click',startQuiz);topicFilter.addEventListener('change',startQuiz);lengthFilter.addEventListener('change',startQuiz);startQuiz();
+</script></body></html>
